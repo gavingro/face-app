@@ -6,6 +6,8 @@ from skimage import io
 import numpy as np
 import pandas as pd
 
+from .hyperparameters import DEVICE
+
 
 # Make Custom Dataset for our Faces and Age
 class FaceAgeDataset(torch.utils.data.Dataset):
@@ -44,4 +46,4 @@ class FaceAgeDataset(torch.utils.data.Dataset):
 
         if self.transform:
             image = self.transform(image)
-        return image, ages
+        return image.to(DEVICE), ages.to(DEVICE)

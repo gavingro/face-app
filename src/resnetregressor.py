@@ -6,7 +6,7 @@ from torch import nn
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .hyperparameters import DROPOUT_RATE, LEARNING_RATE, L2_DECAY_RATE
+from .hyperparameters import DEVICE, DROPOUT_RATE, LEARNING_RATE, L2_DECAY_RATE
 from .data import train_loader, validation_loader
 
 
@@ -111,6 +111,8 @@ class ResNetRegressor(nn.Module):
         self.train()
         if not os.path.exists("models/" + model_name):
             os.makedirs("models/" + model_name)
+        
+        self.to(DEVICE)
 
         final_epoch = self.total_epochs + num_epochs
         for epoch in range(num_epochs):
@@ -219,6 +221,7 @@ class ResNetRegressor(nn.Module):
         MSE : A Float of the Mean Squared Error.
         """
         self.eval()
+        self.to(DEVICE)
         with torch.no_grad():
             # Get predictions from model, and
             # compare with true labels.
