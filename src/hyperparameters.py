@@ -1,0 +1,5 @@
+# Hyperparameters for Model
+BATCH_SIZE = 16
+LEARNING_RATE = 0.0001
+L2_DECAY_RATE = 0.0001
+DROPOUT_RATE = 0.4
