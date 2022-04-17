@@ -2,7 +2,6 @@ import os
 from PIL import Image
 
 import torch
-from skimage import io
 import numpy as np
 import pandas as pd
 

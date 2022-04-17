@@ -1,4 +1,5 @@
 import os
+import logging
 from datetime import datetime
 
 import torch
@@ -13,7 +14,7 @@ from .hyperparameters import (
     L2_DECAY_RATE,
     BATCH_SIZE,
 )
-from .data import train_loader, validation_loader
+from .data import train_loader, test_loader
 
 
 class ResNetRegressor(nn.Module):
@@ -85,15 +86,16 @@ class ResNetRegressor(nn.Module):
         """
         outputs = self.forward(x)
         loss = self.criterion(outputs, ages)
-        self.optimizer.zero_grad()  # avoid accumulation
-        loss.backward()  # update params
-        self.optimizer.step()  # continue
+        self.optimizer.zero_grad()  # avoid accumulatio
+        if self.training:
+            loss.backward()  # update params
+            self.optimizer.step()  # continue
         return loss
 
     def fit(
         self,
         train_loader: torch.utils.data.DataLoader = train_loader,
-        validation_loader: torch.utils.data.DataLoader = validation_loader,
+        validation_loader: torch.utils.data.DataLoader = test_loader,
         num_epochs: int = 5,
         model_name: str = "resnet_age",
         save_every: int = None,
@@ -113,8 +115,11 @@ class ResNetRegressor(nn.Module):
         train_loader : torch.utils.data.DataLoader, optional
             Dataset you want to train your model on, by default train_loader
         validation_loader : torch.utils.data.DataLoader, optional
-            Dataset you want to check validity on. Does NOT affect gradients / weights
-            of the model, but may be "seen" by batch-normalization, by default validation_loader
+            Dataset you want to check validity on.
+            Does NOT affect weights of the model,
+            and shouldn't be "seen" by batch-normalization,
+            by default validation_loader due to
+            model.eval().
         num_epochs : int, optional
             Number of epochs to train, by default 5
         model_name : str, optional
@@ -125,7 +130,6 @@ class ResNetRegressor(nn.Module):
             by default None
         """
         # Make Folder for saving snapshots if doesn't exist:
-        self.train()
         if not os.path.exists("models/" + model_name):
             os.makedirs("models/" + model_name)
 
@@ -133,9 +137,11 @@ class ResNetRegressor(nn.Module):
 
         final_epoch = self.total_epochs + num_epochs
         for epoch in range(num_epochs):
+            # Ensure model is in train mode.
+            self.train()
             # Print Metrics based on total epochs trained,
             # not just this training cycle.
-            print(f"=== Epoch {self.total_epochs + 1} / {final_epoch} ===")
+            logging.info(f"=== Epoch {self.total_epochs + 1} / {final_epoch} ===\n")
             # Instantialize variable for epoch
             training_loss = None
             validation_loss = None
@@ -150,14 +156,15 @@ class ResNetRegressor(nn.Module):
                 if (i + 1) % 50 == 0:
                     now = datetime.now()
                     nowstring = now.strftime("%D %H:%M:%S")
-                    print(
+                    logging.debug(
                         f"{nowstring} - Step [{i + 1} / {len(train_loader)}]: training_loss = {training_loss:.8f}"
                     )
 
             # Increment total epochs trained after train data.
             self.total_epochs += 1
-
             # Get Validation Loss for Epoch
+            # Avoid updating gradients.
+            self.eval()
             epoch_validation_losses = np.empty(len(validation_loader))
             with torch.no_grad():
                 for i, (inputs, labels) in enumerate(validation_loader):
@@ -170,7 +177,7 @@ class ResNetRegressor(nn.Module):
             # so we can find the mean of them all on the same scale.
             epoch_training_loss = np.mean(epoch_training_losses)
             epoch_validation_loss = np.mean(epoch_validation_losses)
-            print(f"{epoch_training_loss=},\t {epoch_validation_loss=}")
+            logging.info(f"{epoch_training_loss=},\t {epoch_validation_loss=}")
 
             # Save Losses for Metrics
             self.training_loss_records.append(epoch_training_loss)
@@ -250,8 +257,8 @@ class ResNetRegressor(nn.Module):
 
     def score(
         self,
-        training_loader: torch.utils.data.DataLoader,
-        testing_loader: torch.utils.data.DataLoader,
+        training_loader: torch.utils.data.DataLoader = train_loader,
+        testing_loader: torch.utils.data.DataLoader = test_loader,
         show=False,
         model_name="resnet_age",
     ) -> None:
@@ -309,7 +316,9 @@ class ResNetRegressor(nn.Module):
                 if i > 50:
                     break
             training_rmse = (np.sum(batch_mses) / len(training_loader)) ** (1 / 2)
-            axd["lower_left"].set_title(f"Training RMSE: {training_rmse}")
+            axd["lower_left"].set_title(
+                f"Training RMSE (First 50 Batches): {training_rmse}"
+            )
 
             # Make TESTING DATA plot
             axd["lower_right"].set_xlabel("Predicted Ages")
@@ -324,16 +333,13 @@ class ResNetRegressor(nn.Module):
                 axd["lower_right"].scatter(outputs, labels)
                 batch_mse = torch.sum(torch.pow(labels - outputs, 2)) / len(x)
                 batch_mses[i] = batch_mse
-                # Cap at certain amount of points to save time and reduce clutter
-                if i > 50:
-                    break
             testing_rmse = (np.sum(batch_mses) / len(testing_loader)) ** (1 / 2)
             axd["lower_right"].set_title(f"Testing RMSE: {testing_rmse}")
             plt.tight_layout()
 
             # Display / save results
             if show:
-                print(f"RMSE: {training_rmse=}, {testing_rmse=}")
+                logging.info(f"RMSE: {training_rmse=}, {testing_rmse=}")
                 plt.show()
                 return
             else:

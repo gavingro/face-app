@@ -26,12 +26,14 @@ face_age_data = FaceAgeDataset(
     transform=input_data_transform,
 )
 
-# Make 80-05-10 train-validation-test split
-train_data, validation_data, test_data = torch.utils.data.random_split(
+# Make 85-15 train-test split.
+# Skip Validation Set - not using it.
+# train_data, validation_data, test_data = torch.utils.data.random_split(
+train_data, test_data = torch.utils.data.random_split(
     face_age_data,
     [
-        int(len(face_age_data) * 0.8),
-        int(len(face_age_data) * 0.05),
+        int(len(face_age_data) * 0.85),
+        # int(len(face_age_data) * 0.05),
         int(len(face_age_data) * 0.15),
     ],
 )
@@ -43,15 +45,15 @@ train_loader = torch.utils.data.DataLoader(
     shuffle=True,
 )
 
-validation_loader = torch.utils.data.DataLoader(
-    validation_data, batch_size=BATCH_SIZE, shuffle=True
-)
+# validation_loader = torch.utils.data.DataLoader(
+#     validation_data, batch_size=BATCH_SIZE, shuffle=True
+# )
 
 test_loader = torch.utils.data.DataLoader(
     test_data, batch_size=BATCH_SIZE, shuffle=True
 )
 
-# MAKE DUMMY SMALL DATA
+# MAKE DUMMY SMALL DATA FOR HYPERPARAMETER EXPLORATION
 dummy_data = [face_age_data[i] for i in range(24)]
 
 dummy_train, dummy_validation, dummy_test = torch.utils.data.random_split(
