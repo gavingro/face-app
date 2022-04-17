@@ -265,7 +265,7 @@ def score(
                 break
         training_rmse = (np.sum(batch_mses) / len(training_loader)) ** (1 / 2)
         axd["lower_left"].set_title(
-            f"Training RMSE (First 50 Batches): {training_rmse}"
+            f"Training RMSE (First 50 Batches): {training_rmse:.5f}"
         )
 
         # Make TESTING DATA plot
@@ -282,7 +282,7 @@ def score(
             batch_mse = torch.sum(torch.pow(labels - outputs, 2)) / len(x)
             batch_mses[i] = batch_mse
         testing_rmse = (np.sum(batch_mses) / len(testing_loader)) ** (1 / 2)
-        axd["lower_right"].set_title(f"Testing RMSE: {testing_rmse}")
+        axd["lower_right"].set_title(f"Testing RMSE: {testing_rmse:.5f}")
         plt.tight_layout()
 
         # Display / save results
