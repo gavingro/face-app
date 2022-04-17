@@ -5,6 +5,20 @@ from src.current_model import model
 from src.helper_func import fit, score
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, filename="resnet_age_trainer.log")
-    fit(model, train_loader, test_loader, num_epochs=100, model_name="resnet_age")
-    score(model, train_loader, test_loader, model_name="resnet_age")
+    # Log to Console AND to file
+    MODEL_NAME = "resnet_age"
+    logging.basicConfig(
+        level=logging.INFO,
+        handlers=[logging.FileHandler(MODEL_NAME + ".log"), logging.StreamHandler()],
+    )
+    try:
+        logging.debug("Beginning Model Training.")
+        fit(model, train_loader, test_loader, num_epochs=100, model_name=MODEL_NAME)
+        logging.debug("Concluding Model Training.")
+    except KeyboardInterrupt:
+        logging.warning("Exiting Training Cycle due to Keyboard Interrupt.")
+        logging.warning("Continuing with Model Scoring/Evaluation.")
+    finally:
+        logging.debug("Beginning Model Evaluation.")
+        score(model, train_loader, test_loader, model_name=MODEL_NAME)
+        logging.debug("Concluding Model Evaluation.")
