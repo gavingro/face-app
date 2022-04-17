@@ -141,7 +141,7 @@ class ResNetRegressor(nn.Module):
             self.train()
             # Print Metrics based on total epochs trained,
             # not just this training cycle.
-            logging.info(f"=== Epoch {self.total_epochs + 1} / {final_epoch} ===\n")
+            logging.info(f"=== Epoch {self.total_epochs + 1} / {final_epoch} ===")
             # Instantialize variable for epoch
             training_loss = None
             validation_loss = None
@@ -240,13 +240,13 @@ class ResNetRegressor(nn.Module):
         if not ax:
             ax = plt.subplot()
         ax.plot(
-            range(len(self.training_loss_records)),
+            range(1, len(self.training_loss_records) + 1),
             self.training_loss_records,
             color="red",
             label="Training Loss",
         )
         ax.plot(
-            range(len(self.validation_loss_records)),
+            range(1, len(self.validation_loss_records) + 1),
             self.validation_loss_records,
             color="blue",
             label="Validation Loss",
