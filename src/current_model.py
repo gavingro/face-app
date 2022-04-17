@@ -1,9 +1,10 @@
 import torch
 
 from .resnetregressor import ResNetRegressor
+from .helper_func import parallelize
 
-MODEL_NAME = "resnet_age1"
-LATEST_EPOCH = 9
+MODEL_NAME = "resnet_age"
+LATEST_EPOCH = 1
 
 model = ResNetRegressor()
 
@@ -14,3 +15,6 @@ model = ResNetRegressor()
 # model.total_epochs = checkpoint["epoch"]
 # model.training_loss_records = checkpoint["training_loss"]
 # model.validation_loss_records = checkpoint["validation_loss"]
+
+if torch.cuda.device_count() > 1:
+    model = parallelize(model)
