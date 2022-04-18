@@ -100,7 +100,7 @@ def fit(
             training_loss = backward(model, inputs, labels)
             epoch_training_losses[i] = training_loss
             # Print fit updates
-            if (i + 1) % 50 == 0:
+            if (i + 1) % 25 == 0:
                 now = datetime.now()
                 nowstring = now.strftime("%D %H:%M:%S")
                 logging.debug(
@@ -302,9 +302,7 @@ def score(
             return
 
 
-def parallelize(
-    model
-):
+def parallelize(model):
     """
     Turns our resnetregressor into a data parallel
     nn model for training on distributed GPU's, while
