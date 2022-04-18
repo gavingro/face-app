@@ -29,6 +29,4 @@ def setup_agelabel_df_from_filepath(img_folder: str, output_csv_path: str) -> No
 
 
 if __name__ == "__main__":
-    setup_agelabel_df_from_filepath(
-        "data/UTKFace/crop_part1" "data/UTKFace/ages-cropped.csv"
-    )
+    setup_agelabel_df_from_filepath("assets/crop_part1" "data/UTKFace/ages-cropped.csv")
