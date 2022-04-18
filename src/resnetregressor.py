@@ -31,7 +31,7 @@ class ResNetRegressor(nn.Module):
         regression_layers += [nn.Dropout(p=DROPOUT_RATE)]
         regression_layers += [nn.Linear(1024, 512, bias=True), nn.ReLU(inplace=True)]
         regression_layers += [nn.Linear(512, 16, bias=True), nn.ReLU(inplace=True)]
-        regression_layers += [nn.Linear(16, 1), nn.ReLu(inplace=True)]
+        regression_layers += [nn.Linear(16, 1), nn.ReLU(inplace=True)]
         total_layers = resnet_layers + regression_layers
         self.fullmodel = nn.Sequential(*total_layers)
 
