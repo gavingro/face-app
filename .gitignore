@@ -1,6 +1,10 @@
 # Too Big
 data/
 
+# Private
+face-app.pem
+train_and_save.sh
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
