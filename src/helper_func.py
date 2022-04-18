@@ -329,3 +329,38 @@ def parallelize(model):
     model.criterion = inner_model.criterion
     model.optimizer = inner_model.optimizer
     return model
+
+
+def preprocess_single_img(img_path: np.str0) -> torch.tensor:
+    """
+    Prepares a single image (not a whole dataset) for
+    inference with the model
+
+    Parameters
+    ----------
+    img_path : str
+        Path to input image.
+
+    Returns
+    -------
+    torch.tensor
+        The input image in tensor form for our
+        model to interpret (with batch
+        size 1).
+    """
+    image = Image.open(img_path)
+    # Same as training data for now.
+    input_data_transform = torchvision.transforms.Compose(
+        [
+            torchvision.transforms.Resize(256),
+            torchvision.transforms.CenterCrop(
+                224
+            ),  # Some SMALL amount of Data Augmentation
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+            ),
+        ]
+    )
+    transformed_image = input_data_transform(image)
+    return transformed_image.unsqueeze(0)
