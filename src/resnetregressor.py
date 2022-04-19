@@ -15,7 +15,9 @@ class ResNetRegressor(nn.Module):
         # Pretrained resnet, excluding usual classification step layer
         resnet_layers = list(
             torch.hub.load(
-                "pytorch/vision:v0.10.0", "resnet34", pretrained=True
+                "pytorch/vision:v0.10.0",
+                "resnet34",
+                pretrained=True,
             ).children()
         )[:-2]
         # Age Regression Layers

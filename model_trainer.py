@@ -1,7 +1,9 @@
 import logging
 
-from src.data import train_loader, test_loader
+# Load model first to set env variable before
+# importing torchvision.
 from src.current_model import model
+from src.data import train_loader, test_loader
 from src.helper_func import fit, score
 
 if __name__ == "__main__":
