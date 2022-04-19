@@ -13,7 +13,7 @@ You can see how the model fares on images within the [UTKFace dataset](https://s
 
 ## The App
 
-![App Screenshot]()
+![App Screenshot](assets/app_screenshot.png)
 
 With no clear plans to serve our CNN model anywhere, I still wanted to be able to display it's performance. So, I built a quick Plotly Dash application in python to naively provide model inference at a limited scale. 
 
