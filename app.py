@@ -191,6 +191,7 @@ app.layout = html.Div(
     ]
 )
 
+
 # DYNAMIC CALLBACKS
 
 # Update image and prediction based
