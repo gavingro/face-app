@@ -1,3 +1,3 @@
 # Assets
 
-To display the images more easily in the plotly dash web app, the dataset's crop_part1/ image folder that was previously held in the data/ directory was moved into this folder.
+To display the images more easily in the plotly dash web app, 1 selection from each age of the UTKFace dataset as been included in the assets of our Plotly Dash App.

@@ -2,7 +2,7 @@
 
 This repository contains a Convolutional Neural Network deep learning model that has been trained to predict the age of a person from an image of their portrait.
 
-You can see how the model fares on images within the [UTKFace dataset](https://susanqq.github.io/UTKFace/) assembled 
+You can see how the model fares on images within the [UTKFace dataset](https://susanqq.github.io/UTKFace/), or on your own user-uploaded images by visiting the [web app](http://www.howoldarethey.ca).
 
 ### Contents
 
@@ -12,6 +12,8 @@ You can see how the model fares on images within the [UTKFace dataset](https://s
 - [Filetree](#Filetree)
 
 ## The App
+
+![App Screenshot]()
 
 With no clear plans to serve our CNN model anywhere, I still wanted to be able to display it's performance. So, I built a quick Plotly Dash application in python to naively provide model inference at a limited scale. 
 
@@ -30,7 +32,7 @@ It should be noted that our model has been trained on cropped and centered image
 
 For this image recognition task, we aimed to extract some sort of measure of age from our portait images. Built on top of the [ResNet Model Architecture](https://arxiv.org/abs/1512.03385), our model uses pretrained convolutional layers (and pooling) in blocks described in the [relevent paper](https://arxiv.org/abs/1512.03385). After these convolutional layers, we implement fully a handful of fully connected layers with ReLu activation functions, using [Dropout](https://jmlr.org/papers/v15/srivastava14a.html) to reduce overfitting. 
 
-We make use of the L1 Smooth Function ([Huber Loss](https://arxiv.org/pdf/2108.12627.pdf)) in PyTorch to train our model, along with the [Adam](https://arxiv.org/abs/1412.6980) optimizer with a small amount of [L2 Regularization](https://arxiv.org/abs/1205.2653) to avoid overpowering weights (thus reducing overfitting).
+We make use of the L1 Smooth Function ([Huber Loss](https://arxiv.org/pdf/2108.12627.pdf)) in PyTorch to train our model, along with the [Adam](https://arxiv.org/abs/1412.6980) optimizer with a small amount of [L2 Regularization](https://arxiv.org/abs/1205.2653) to avoid overpowering weights (thus reducing overfitting even further).
 
 ### Results
 
@@ -207,8 +209,6 @@ ResNetRegressor(
             * *Our Age Labels for our images.*
 - src/
     * *Our relevent python files for our CNN model (and Pytorch utilities).*
-- models/
-    * *Snapshots of our best performing models.*
 - app.py
     * *Our plotly dash app.*
 - hyperparameter_exploration.ipynb
