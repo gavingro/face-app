@@ -2,6 +2,6 @@
 *.md
 *.sh
 
-metrics/
-data/
-tests/
+metrics
+data
+tests
