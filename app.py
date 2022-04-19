@@ -3,6 +3,9 @@
 # contained within this file instead
 # of being modularized out.
 
+import os
+import base64
+
 import dash
 from dash import dcc
 from dash import html
@@ -47,18 +50,24 @@ app.layout = html.Div(
                                     sm=8,
                                     lg=6,
                                     children=[
-                                        html.Img(
-                                            id="img-display",
-                                            className="d-block mx-lg-auto img-fluid",
-                                            width=500,
-                                            height=500,
-                                            alt="image to be predicted",
-                                            src=app.get_asset_url(
-                                                "crop_part1/90_1_0_20170110182426286.jpg.chip.jpg"
-                                            ),
+                                        dcc.Loading(
+                                            type="circle",
+                                            color="#F3B45D",
+                                            children=[
+                                                html.Img(
+                                                    id="img-display",
+                                                    className="d-block mx-lg-auto img-fluid",
+                                                    width=500,
+                                                    height=500,
+                                                    alt="image to be predicted",
+                                                    src=app.get_asset_url(
+                                                        "crop_part1/90_1_0_20170110182426286.jpg.chip.jpg"
+                                                    ),
+                                                ),
+                                            ],
                                         ),
                                         html.P(
-                                            "Predicted age: 25 years old",
+                                            "Predicted age...",
                                             id="prediction",
                                             className="font-weight-light font-italic px-2 text-muted",
                                         ),
@@ -86,7 +95,7 @@ app.layout = html.Div(
                                                         "cursor": "pointer",
                                                     },
                                                 ),
-                                                ", or test out the model yourself by uploading an image of a face with the buttons below.",
+                                                ", or test out the model yourself by uploading a .jpg image of a face below.",
                                                 html.Br(),
                                                 "For best results, try to match the cropping and 244x244 resolution of the images from the dataset.",
                                                 dbc.Tooltip(
@@ -178,21 +187,35 @@ app.layout = html.Div(
     Output("prediction", "children"),
     Input("explore-button", "n_clicks"),
     Input("image-upload", "contents"),
-    Input("image-upload", "filename"),
 )
-def update_img_display_from_button(button_clicks, upload_contents, upload_filename):
+def update_img_display_from_button(button_clicks, upload_contents):
+    # Cleanup temp file if there
+    if os.path.exists("assets/temp.jpg"):
+        os.remove("assets/temp.jpg")
+
     # Uploaded Image
     if dash.callback_context.triggered[0]["prop_id"] == "image-upload.contents":
         # Easy SRC for Display
         image_src = upload_contents
 
+        # UNFORTUNATELY upload_filename has a hidden path for privacy, which means
+        # we need to decode the image contents from base 64 to make a temp image
+        # file.
+        upload_content_type, upload_content_string = upload_contents.split(",")
+        jpeg_content_string = base64.b64decode(upload_content_string)
+        with open("assets/temp.jpg", "wb") as tempfile:
+            tempfile.write(jpeg_content_string)
+
         # Get Age Prediction.
         model.eval()
-        # predicted_age = model(preprocess_single_img(upload_filename))
-        predicted_age = 25
+        predicted_age = model(preprocess_single_img("assets/temp.jpg")).item()
         prediction = f"Predicted Age: {predicted_age:.2f} years old."
-    # Button Click
-    else:
+
+    # Button Click (or page load)
+    elif (
+        dash.callback_context.triggered[0]["prop_id"] == "explore-button.n_clicks"
+        or not button_clicks
+    ):
         # Get Random Image / Age from labels dataframe
         picture = ages_df.sample(1, replace=True)
         age = picture["age"].values[0]
@@ -200,11 +223,12 @@ def update_img_display_from_button(button_clicks, upload_contents, upload_filena
 
         # Get Age Prediction
         model.eval()
-        # predicted_age = model(preprocess_single_img(image_src))
-        predicted_age = 25
-        prediction = (
-            f"Predicted Age: {predicted_age} Years old.\t True Age: {age} years old."
-        )
+        predicted_age = model(preprocess_single_img(image_src)).item()
+        prediction = f"Predicted Age: {predicted_age:.1f} Years old.\t True Age: {age} years old."
+    # If not one of those two, don't update?
+    else:
+        raise dash.exceptions.PreventUpdate
+
     return image_src, prediction
 
 

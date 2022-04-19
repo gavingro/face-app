@@ -1,10 +1,11 @@
 import os
 import logging
 from datetime import datetime
-from turtle import back
+from PIL import Image
 
 import torch
 from torch import nn
+import torchvision
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -348,7 +349,17 @@ def preprocess_single_img(img_path: np.str0) -> torch.tensor:
         model to interpret (with batch
         size 1).
     """
-    image = Image.open(img_path)
+    try:
+        image = Image.open(img_path)
+    except FileNotFoundError as full_path_error:
+        try:
+            # If absolute path causes issues, try relative path.
+            img_path = img_path[1:]
+            image = Image.open(img_path)
+        except FileNotFoundError:
+            # If that didn't work, raise
+            # original error with full path.
+            raise full_path_error
     # Same as training data for now.
     input_data_transform = torchvision.transforms.Compose(
         [
