@@ -36,6 +36,20 @@ app.layout = html.Div(
     [
         dbc.Container(
             children=[
+                # Temp Alert to dismiss BAD model performance.
+                dbc.Row(
+                    class_name="pt-3",
+                    children=[
+                        dbc.Alert(
+                            children=[
+                                f"This app is still a work in progress. Our current model has undergone {model.total_epochs} training epochs. Model performance expected to improve dramatically in days to come.",
+                            ],
+                            class_name="alert-warning",
+                            dismissable=True,
+                            is_open=True,
+                        ),
+                    ],
+                ),
                 dbc.Col(
                     class_name="col-xxl-auto px-4 py-5",
                     children=[
@@ -141,7 +155,7 @@ app.layout = html.Div(
                             ],
                         )
                     ],
-                )
+                ),
             ],
         ),
         html.Footer(
