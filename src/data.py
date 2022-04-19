@@ -22,7 +22,7 @@ input_data_transform = torchvision.transforms.Compose(
 # Define Data with Dataset class
 face_age_data = FaceAgeDataset(
     "data/UTKFace/ages-cropped.csv",
-    "assets/crop_part1",
+    "data/UTKFace/crop_part1",
     transform=input_data_transform,
 )
 

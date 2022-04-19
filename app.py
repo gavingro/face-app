@@ -28,7 +28,7 @@ app = dash.Dash(
 server = app.server
 
 # Age CSV Dataframe
-ages_df = pd.read_csv("data/UTKFace/ages-cropped.csv")
+ages_df = pd.read_csv("assets/app_ages.csv")
 model = model
 
 # APP LAYOUT
@@ -233,7 +233,7 @@ def update_img_display_from_button(button_clicks, upload_contents):
         # Get Random Image / Age from labels dataframe
         picture = ages_df.sample(1, replace=True)
         age = picture["age"].values[0]
-        image_src = app.get_asset_url("crop_part1/" + picture["id"].values[0])
+        image_src = app.get_asset_url("app_img_subset/" + picture["id"].values[0])
 
         # Get Age Prediction
         model.eval()
