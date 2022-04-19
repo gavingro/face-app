@@ -16,7 +16,6 @@ from .hyperparameters import (
     L2_DECAY_RATE,
     BATCH_SIZE,
 )
-from .data import train_loader, test_loader
 
 
 def backward(model, x, ages):
@@ -42,8 +41,8 @@ def backward(model, x, ages):
 
 def fit(
     model,
-    train_loader: torch.utils.data.DataLoader = train_loader,
-    validation_loader: torch.utils.data.DataLoader = test_loader,
+    train_loader: torch.utils.data.DataLoader,
+    validation_loader: torch.utils.data.DataLoader,
     num_epochs: int = 5,
     model_name: str = "resnet_age",
     save_every: int = None,
@@ -206,8 +205,8 @@ def visualize_training(model, ax=None):
 
 def score(
     model,
-    training_loader: torch.utils.data.DataLoader = train_loader,
-    testing_loader: torch.utils.data.DataLoader = test_loader,
+    training_loader: torch.utils.data.DataLoader,
+    testing_loader: torch.utils.data.DataLoader,
     show=False,
     model_name="resnet_age",
 ) -> None:
