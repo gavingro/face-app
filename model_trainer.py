@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # Log to Console AND to file
     MODEL_NAME = "resnet_age"
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         handlers=[logging.FileHandler(MODEL_NAME + ".log"), logging.StreamHandler()],
     )
     try:
