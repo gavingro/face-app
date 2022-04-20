@@ -145,7 +145,7 @@ app.layout = html.Div(
                                                 ),
                                                 dbc.Button(
                                                     "Explore Dataset",
-                                                    class_name="btn btn-secondary btn-lg px-4",
+                                                    class_name="btn btn-secondary btn-lg px-4 me-md-2",
                                                     id="explore-button",
                                                 ),
                                             ],
