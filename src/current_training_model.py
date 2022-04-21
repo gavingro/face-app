@@ -24,4 +24,4 @@ training_model.training_loss_records = checkpoint["training_loss"]
 training_model.validation_loss_records = checkpoint["validation_loss"]
 
 if torch.cuda.device_count() > 1:
-    model = parallelize(model)
+    training_model = parallelize(training_model)
