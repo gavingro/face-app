@@ -5,4 +5,4 @@
 metrics
 data
 tests
-models/resnet_age
+models/resnet34_base
