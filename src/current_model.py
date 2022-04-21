@@ -45,9 +45,19 @@ def load_model_from_gzip(filename_in: str) -> torch.nn.Module:
 
 
 # Load smaller JIT model for predictions.
-model = load_model_from_gzip(
-    "models/" + MODEL_NAME + "/jit/epoch_" + str(LATEST_EPOCH) + ".tar.gz"
-)
+path = "models/" + MODEL_NAME + "/jit/epoch_" + str(LATEST_EPOCH) + ".tar.gz"
+try:
+    model = load_model_from_gzip(path)
+except FileNotFoundError as full_path_error:
+    try:
+        # If relative path causes issues, try absolute path of Heroku app.
+        img_path = "/app/" + path
+        model = load_model_from_gzip(path)
+    except FileNotFoundError:
+        # If that didn't work, raise
+        # original error with full path.
+        raise full_path_error
+
 
 if torch.cuda.device_count() > 1:
     model = parallelize(model)
