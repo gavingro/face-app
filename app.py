@@ -42,7 +42,7 @@ app.layout = html.Div(
                     children=[
                         dbc.Alert(
                             children=[
-                                f"This app is still a work in progress. Our current model has undergone {model.total_epochs} training epochs. Model performance expected to improve dramatically in days to come.",
+                                f"This app is still a work in progress. Performance on user-uploaded portraits is expected to improve dramatically when model is re-trained on uncropped faces.",
                             ],
                             class_name="alert-warning",
                             dismissable=True,
